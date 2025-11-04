@@ -1,12 +1,43 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button'; // <-- REQUIRED for mat-raised-button
+import { RouterOutlet } from '@angular/router'; // <-- REQUIRED for <router-outlet> in app.html
+
+import { UserRegistrationFormComponent } from './user-registration-form/user-registration-form';
+import { UserLoginFormComponent } from './user-login-form/user-login-form';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css'],
+  standalone: true,
+  imports: [
+    // Core Modules
+    RouterOutlet, // <-- ADDED: For routing
+    
+    // Material Modules
+    MatDialogModule, // <-- ADDED: For MatDialog functionality
+    MatButtonModule, // <-- ADDED: For mat-raised-button
+    
+    // Custom Components
+    UserRegistrationFormComponent, 
+    UserLoginFormComponent
+  ]
 })
-export class App {
-  protected readonly title = signal('myFlix-Angular-client');
+export class AppComponent {
+  title = 'myFlix-Angular-client';
+
+  constructor(public dialog: MatDialog) { }
+
+  openUserRegistrationDialog(): void {
+    this.dialog.open(UserRegistrationFormComponent, {
+      width: '280px'
+    });
+  }
+
+  openUserLoginDialog(): void {
+    this.dialog.open(UserLoginFormComponent, {
+      width: '280px'
+    });
+  }
 }
