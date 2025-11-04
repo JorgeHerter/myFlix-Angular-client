@@ -1,59 +1,95 @@
-# MyFlixAngularClient
+🎬 myFlix Angular Client ⭐
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+This project is the front-end Single Page Application (SPA) built with the Angular framework. It serves as the client interface for the myFlix movie database API, providing users with a comprehensive movie viewing and management experience.
 
-## Development server
+🔑 Key Features: API Service Implementation (Part 1)
 
-To start a local development server, run:
+The core functionality for this stage involves the FetchApiDataService, which implements the logic for connecting to the back-end endpoints.
 
-```bash
-ng serve
-```
+Endpoint
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Purpose
 
-## Code scaffolding
+Status
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+User Registration
 
-```bash
-ng generate component component-name
-```
+Create a new user account.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+✅ Implemented
 
-```bash
-ng generate --help
-```
+User Login
 
-## Building
+Authenticate user and receive JWT.
 
-To build the project run:
+✅ Implemented
 
-```bash
-ng build
-```
+Get All Movies
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Retrieve a list of all available movies.
 
-## Running unit tests
+✅ Implemented
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Get One Movie
 
-```bash
-ng test
-```
+Get details for a specific movie title.
 
-## Running end-to-end tests
+✅ Implemented
 
-For end-to-end (e2e) testing, run:
+Get Director
 
-```bash
-ng e2e
-```
+Retrieve director details by name.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+✅ Implemented
 
-## Additional Resources
+Get Genre
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Retrieve genre details by name.
+
+✅ Implemented
+
+Get User Profile
+
+Get specific user account data.
+
+✅ Implemented
+
+Get Favourite Movies
+
+Retrieve the user's list of favorite movies.
+
+✅ Implemented
+
+Add Movie to Favourites
+
+Add a movie ID to the user's list.
+
+✅ Implemented
+
+Edit User Profile
+
+Update user information (password, email, etc.).
+
+✏️ Implemented
+
+Delete User
+
+Remove the user account permanently.
+
+🗑️ Implemented
+
+Remove from Favourites
+
+Delete a movie from the user's list.
+
+🗑️ Implemented
+
+⚙️ Technologies & Setup
+
+Framework: Angular (Standalone Components, Zoneless) 🅰️
+
+Language: TypeScript 🇹
+
+Styling: CSS
+
+API: Connects to the myFlix REST API at https://myflix-movie-api.herokuapp.com/
