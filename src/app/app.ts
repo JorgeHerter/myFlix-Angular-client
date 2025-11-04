@@ -20,8 +20,8 @@ import { UserLoginFormComponent } from './user-login-form/user-login-form';
     MatButtonModule, // <-- ADDED: For mat-raised-button
     
     // Custom Components
-    UserRegistrationFormComponent, 
-    UserLoginFormComponent
+    //UserRegistrationFormComponent, 
+    //UserLoginFormComponent
   ]
 })
 export class AppComponent {
