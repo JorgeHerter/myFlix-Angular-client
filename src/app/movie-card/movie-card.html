@@ -1,0 +1,85 @@
+<!-- Movie Cards Grid -->
+<div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+
+  <!-- Movie Card -->
+  <mat-card 
+    *ngFor="let movie of movies" 
+    class="movie-card shadow-lg hover:shadow-xl transition-shadow duration-300"
+  >
+    <!-- Header -->
+    <mat-card-header class="flex flex-col items-start p-4">
+      <mat-card-title class="text-xl font-bold text-indigo-800 line-clamp-1">
+        {{ movie.Title }}
+      </mat-card-title>
+      <mat-card-subtitle class="text-gray-500">
+        {{ movie.Director?.Name }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <!-- Poster Image -->
+    <img
+      mat-card-image
+      [src]="movie.ImagePath || 'assets/placeholder.png'"
+      [alt]="movie.Title"
+      class="w-full h-80 object-cover"
+      (error)="
+        $event.target.src = 'assets/placeholder.png'
+      "  <!-- fallback if image fails to load -->
+    />
+
+    <!-- Description -->
+    <mat-card-content class="p-4">
+      <p class="text-sm text-gray-700 line-clamp-3 mb-2">
+        {{ movie.Description }}
+      </p>
+    </mat-card-content>
+
+    <!-- Actions -->
+    <mat-card-actions class="flex justify-between items-center p-4 pt-0">
+      <button mat-button color="primary" [matMenuTriggerFor]="menu">DETAILS</button>
+
+      <button
+        mat-icon-button
+        [color]="isFavorite(movie._id) ? 'warn' : 'basic'"
+        (click)="toggleFavorite(movie)"
+        title="Toggle Favorite"
+      >
+        <mat-icon>
+          {{ isFavorite(movie._id) ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+    </mat-card-actions>
+
+    <!-- Mat Menu for extra details -->
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openGenreDialog(movie.Genre)">
+        <mat-icon>label</mat-icon>
+        <span>Genre ({{ movie.Genre?.Name }})</span>
+      </button>
+      <button mat-menu-item (click)="openDirectorDialog(movie.Director)">
+        <mat-icon>person</mat-icon>
+        <span>Director</span>
+      </button>
+      <button mat-menu-item (click)="openMovieDetailsDialog(movie)">
+        <mat-icon>info</mat-icon>
+        <span>Synopsis</span>
+      </button>
+    </mat-menu>
+  </mat-card>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="movies.length === 0 && !isLoading"
+    class="col-span-full text-center py-10 text-gray-500"
+  >
+    No movies found.
+  </div>
+
+  <!-- Loading State -->
+  <div
+    *ngIf="isLoading"
+    class="col-span-full text-center py-10 text-gray-500"
+  >
+    Loading movies...
+  </div>
+</div>

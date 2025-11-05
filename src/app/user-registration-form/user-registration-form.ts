@@ -1,61 +1,177 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { FormsModule } from '@angular/forms'; // For [(ngModel)] binding
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { FetchApiDataService } from '../fetch-api-data';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
+
+// Angular Material & Forms Imports
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
-// NOTE: Ensure your path and file name for the service is correct
-import { FetchApiDataService } from '../fetch-api-data'; 
-
+/**
+ * Component for handling user registration within a dialog.
+ */
 @Component({
   selector: 'app-user-registration-form',
-  // Renamed to match the file structure you listed earlier:
-  templateUrl: './user-registration-form.html',
-  styleUrls: ['./user-registration-form.css'],
-  
-  // *** REQUIRED FOR STANDALONE COMPONENTS ***
-  standalone: true, 
+  standalone: true,
   imports: [
-    MatDialogModule,
-    MatSnackBarModule,
+    CommonModule,
     FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule 
-  ]
+    MatCardModule, 
+    MatButtonModule, 
+    MatInputModule, 
+    MatFormFieldModule
+  ],
+  template: `
+    <mat-card class="p-6">
+      <mat-card-header>
+        <mat-card-title class="text-2xl font-semibold text-indigo-700">
+          Register Account
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content class="mt-4">
+        <!-- ERROR DISPLAY SECTION -->
+        <div *ngIf="errorMessages.length > 0" 
+             class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <p class="font-semibold mb-1">
+            Registration Failed. Please correct the following errors:
+          </p>
+          <ul class="list-disc ml-5 space-y-1">
+            <li *ngFor="let error of errorMessages">{{ error }}</li>
+          </ul>
+        </div>
+        
+        <form (ngSubmit)="registerUser()">
+          <mat-form-field class="w-full">
+            <mat-label>Username (min 5 characters, alphanumeric)</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Username"
+              type="text"
+              name="Username"
+              required
+            >
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Password (min 8 chars, incl. 1 uppercase, 1 number)</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Password"
+              type="password"
+              name="Password"
+              required
+            >
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Email</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Email"
+              type="email"
+              name="Email"
+              required
+            >
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Birthday</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Birthday"
+              type="date"
+              name="Birthday"
+              required
+            >
+          </mat-form-field>
+
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-700 transition duration-150"
+          >
+            Submit Registration
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  `,
+  styles: [`
+    .mat-mdc-card {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  `]
 })
 export class UserRegistrationFormComponent implements OnInit {
-  @Input() userData: any = { Username: '', Password: '', Email: '', Birthday: '' }; 
+  
+  // Component model for form data
+  userData = { 
+    Username: '', 
+    Password: '', 
+    Email: '', 
+    Birthday: '' 
+  };
+
+  // Array to hold server-side validation error messages
+  errorMessages: string[] = [];
 
   constructor(
     public fetchApiData: FetchApiDataService,
     public dialogRef: MatDialogRef<UserRegistrationFormComponent>,
     public snackBar: MatSnackBar
-  ) { }
+  ) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
-  // This function is responsible for sending the form inputs to the backend
+  /**
+   * Sends registration details to the API and handles validation errors.
+   */
   registerUser(): void {
-    this.fetchApiData.userRegistration(this.userData).subscribe({
-      // Added ': any' to resolve TS2307/TS7006 errors
-      next: (result: any) => { 
-        this.dialogRef.close(); 
-        console.log(result);
-        this.snackBar.open('User registration successful!', 'OK', {
-          duration: 2000
+    this.errorMessages = []; // Clear old errors before submitting
+
+    // ✅ FIXED: use correct property names for the myFlix API
+    const registrationPayload = {
+      Username: this.userData.Username,
+      Password: this.userData.Password,
+      Email: this.userData.Email,
+      Birthday: this.userData.Birthday
+    };
+
+    this.fetchApiData.userRegistration(registrationPayload).subscribe({
+      next: (result) => {
+        this.dialogRef.close();
+        this.snackBar.open('Registration successful! Please log in.', 'OK', {
+          duration: 4000
         });
       },
-      // Added ': any' to resolve TS7006 error
-      error: (error: any) => { 
-        console.error(error);
-        this.snackBar.open('Registration failed. Please try again.', 'OK', {
-          duration: 2000
-        });
+      error: (error: HttpErrorResponse) => {
+        console.error('Registration error:', error);
+
+        if (error.status === 422 && Array.isArray(error.error?.errors)) {
+          // Validation error from backend
+          this.errorMessages = error.error.errors.map(
+            (err: any) => err.msg || 'Invalid field data.'
+          );
+        } else if (error.status === 400) {
+          const message =
+            error.error?.message ||
+            'Username already exists or validation failed.';
+          this.snackBar.open(message, 'OK', { duration: 5000 });
+        } else {
+          this.snackBar.open(
+            'An unexpected error occurred. Please try again.',
+            'OK',
+            { duration: 5000 }
+          );
+        }
       }
     });
   }

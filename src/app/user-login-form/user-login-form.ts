@@ -1,37 +1,76 @@
 // In src/app/user-login-form/user-login-form.ts
 
 import { Component, OnInit, Input } from '@angular/core';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog'; // Import MatDialogModule
+import { MatDialogRef } from '@angular/material/dialog';
 import { FetchApiDataService } from '../fetch-api-data';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Import MatSnackBarModule
-import { Router } from '@angular/router'; // Import Router
-import { FormsModule } from '@angular/forms'; // Required for [(ngModel)]
-import { MatInputModule } from '@angular/material/input'; // Required for input fields
-import { MatButtonModule } from '@angular/material/button'; // Required for buttons
-import { MatCardModule } from '@angular/material/card'; // Required for mat-card
-import { MatFormFieldModule } from '@angular/material/form-field'; // Required for form fields
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+
+// Angular Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-login-form',
-  // Renamed to match the file structure you listed earlier:
-  templateUrl: './user-login-form.html',
-  styleUrls: ['./user-login-form.css'],
-  
-  // *** REQUIRED FOR STANDALONE COMPONENTS ***
-  standalone: true, 
+  standalone: true,
   imports: [
-    MatDialogModule,
-    MatSnackBarModule,
+    CommonModule,
     FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
+    MatCardModule, 
+    MatButtonModule, 
+    MatInputModule, 
     MatFormFieldModule
-    // Note: Router is injected, so we typically don't need to list it here, but its dependencies should be configured in app.config.ts
-  ]
+  ],
+  template: `
+    <mat-card class="p-6">
+      <mat-card-header>
+        <mat-card-title class="text-2xl font-semibold text-indigo-700">Log In</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mt-4">
+        <form (ngSubmit)="loginUser()">
+          <mat-form-field class="w-full">
+            <mat-label>Username</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Username"
+              type="text"
+              name="Username"
+              required
+            >
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Password</mat-label>
+            <input 
+              matInput
+              [(ngModel)]="userData.Password"
+              type="password"
+              name="Password"
+              required
+            >
+          </mat-form-field>
+
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="w-full mt-4 py-3"
+          >
+            Sign In
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  `,
+  styles: []
 })
 export class UserLoginFormComponent implements OnInit {
-  @Input() userData: any = { Username: '', Password: '' };
+  
+  userData = { Username: '', Password: '' };
 
   constructor(
     public fetchApiData: FetchApiDataService,
@@ -40,29 +79,40 @@ export class UserLoginFormComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+  }
 
+  /**
+   * Sends the form inputs to the backend for user authentication.
+   */
   loginUser(): void {
     this.fetchApiData.userLogin(this.userData).subscribe({
-      // Added ': any' to resolve implicit type errors
-      next: (result: any) => { 
-        // Store the user and token in localStorage
+      next: (result) => {
+        // --- CRITICAL MISSING LOGIC START ---
+        
+        // 1. Save the token and user object to localStorage
         localStorage.setItem('user', JSON.stringify(result.user));
         localStorage.setItem('token', result.token);
-
-        this.dialogRef.close();
+        
+        // 2. Close the dialog
+        this.dialogRef.close(); 
+        
+        // 3. Show success message
         this.snackBar.open('Login successful!', 'OK', {
           duration: 2000
         });
-
-        // Redirect the user to the movies page
+        
+        // 4. Navigate to the movies page
         this.router.navigate(['movies']);
+        
+        // --- CRITICAL MISSING LOGIC END ---
       },
-      // Added ': any' to resolve implicit type errors
-      error: (error: any) => { 
-        console.error(error);
-        this.snackBar.open('Login failed. Please check your username and password.', 'OK', {
-          duration: 2000
+      error: (error) => {
+        console.error('Login error:', error);
+        // Show detailed error message from the API if available
+        const message = error.error?.error || 'Login failed. Please check your username and password.';
+        this.snackBar.open(message, 'OK', {
+          duration: 3000
         });
       }
     });
