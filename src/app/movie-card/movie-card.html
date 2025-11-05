@@ -9,28 +9,26 @@
     <!-- Header -->
     <mat-card-header class="flex flex-col items-start p-4">
       <mat-card-title class="text-xl font-bold text-indigo-800 line-clamp-1">
-        {{ movie.Title }}
+        {{ movie.title }}
       </mat-card-title>
       <mat-card-subtitle class="text-gray-500">
-        {{ movie.Director?.Name }}
+        {{ movie.director }}
       </mat-card-subtitle>
     </mat-card-header>
 
     <!-- Poster Image -->
     <img
       mat-card-image
-      [src]="movie.ImagePath || 'assets/placeholder.png'"
-      [alt]="movie.Title"
+      [src]="movie.imagePath || 'https://via.placeholder.com/400x600?text=No+Image'"
+      [alt]="movie.title"
       class="w-full h-80 object-cover"
-      (error)="
-        $event.target.src = 'assets/placeholder.png'
-      "  <!-- fallback if image fails to load -->
+      (error)="($event.target.src = 'https://via.placeholder.com/400x600?text=No+Image')"
     />
 
     <!-- Description -->
     <mat-card-content class="p-4">
       <p class="text-sm text-gray-700 line-clamp-3 mb-2">
-        {{ movie.Description }}
+        {{ movie.description }}
       </p>
     </mat-card-content>
 
@@ -52,11 +50,11 @@
 
     <!-- Mat Menu for extra details -->
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="openGenreDialog(movie.Genre)">
+      <button mat-menu-item (click)="openGenreDialog(movie.genre)">
         <mat-icon>label</mat-icon>
-        <span>Genre ({{ movie.Genre?.Name }})</span>
+        <span>Genre ({{ movie.genre }})</span>
       </button>
-      <button mat-menu-item (click)="openDirectorDialog(movie.Director)">
+      <button mat-menu-item (click)="openDirectorDialog(movie.director)">
         <mat-icon>person</mat-icon>
         <span>Director</span>
       </button>
@@ -83,3 +81,5 @@
     Loading movies...
   </div>
 </div>
+
+
