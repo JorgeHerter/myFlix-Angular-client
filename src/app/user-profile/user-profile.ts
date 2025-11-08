@@ -24,48 +24,54 @@ import { MatIconModule } from '@angular/material/icon';
     DatePipe
   ],
   template: `
-    <div class="bg-gradient-to-b from-red-900 via-red-700 to-red-900 min-h-screen p-8 flex justify-center items-start">
-      <!-- Theater Frame -->
-      <div class="relative w-full max-w-4xl p-6 border-8 border-yellow-500 shadow-2xl bg-yellow-50 rounded-lg">
-        
+    <div class="vaudeville-bg min-h-screen flex justify-center items-start p-8">
+      <!-- Ornate Frame -->
+      <div class="relative w-full max-w-4xl p-8 border-8 border-yellow-600 rounded-2xl shadow-2xl vaudeville-frame">
+
         <!-- Top Curtain -->
-        <div class="absolute -top-12 left-0 w-full h-12 bg-red-800 rounded-t-lg border-b-4 border-yellow-500 shadow-lg"></div>
+        <div class="absolute -top-12 left-0 w-full h-12 rounded-t-lg bg-gradient-to-b from-purple-900 to-purple-700 border-b-4 border-yellow-600 shadow-lg"></div>
 
         <!-- Profile Card -->
-        <mat-card class="bg-yellow-50 shadow-none">
+        <mat-card class="bg-transparent shadow-none text-yellow-100">
           <mat-card-header>
-            <mat-card-title class="text-4xl font-extrabold text-red-800 text-center flex justify-center items-center gap-3">
-              <mat-icon class="text-yellow-500">account_circle</mat-icon>
+            <mat-card-title class="text-4xl font-extrabold text-center flex justify-center items-center gap-3 text-yellow-300 drop-shadow-md">
+              <mat-icon class="text-yellow-400 text-5xl">account_circle</mat-icon>
               User Profile
             </mat-card-title>
           </mat-card-header>
 
-          <mat-card-content class="mt-6 space-y-6">
+          <mat-card-content class="mt-8 space-y-6">
 
             <!-- VIEW MODE -->
             <div *ngIf="!isEditing">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-red-900 font-semibold">
-                <p><span class="underline">Username:</span> {{ user.Username }}</p>
-                <p><span class="underline">Email:</span> {{ user.Email }}</p>
-                <p><span class="underline">Birthday:</span> {{ user.Birthday | date:'longDate' }}</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-semibold text-yellow-100">
+                <p><span class="text-yellow-400">Username:</span> {{ user.Username }}</p>
+                <p><span class="text-yellow-400">Email:</span> {{ user.Email }}</p>
+                <p><span class="text-yellow-400">Birthday:</span> {{ user.Birthday | date:'longDate' }}</p>
               </div>
 
-              <h3 class="text-2xl font-bold mt-6 mb-2 text-red-700 underline decoration-yellow-400">Favorite Movies</h3>
+              <h3 class="text-2xl font-bold mt-6 mb-3 text-yellow-400 underline decoration-yellow-600">
+                Favorite Movies
+              </h3>
+
               <div *ngIf="favoriteMovies.length > 0; else noFavorites" class="flex flex-wrap gap-3">
                 <span *ngFor="let movie of favoriteMovies"
-                      class="px-4 py-1 bg-red-200 text-red-900 font-semibold rounded-full shadow-md border-2 border-yellow-500 text-sm">
+                      class="px-4 py-1 bg-purple-800/60 text-yellow-200 border border-yellow-500 rounded-full shadow-md text-sm backdrop-blur-sm">
                   {{ movie.Title }}
                 </span>
               </div>
+
               <ng-template #noFavorites>
-                <p class="text-red-900 italic mt-2">No favorite movies added yet.</p>
+                <p class="text-yellow-200 italic mt-2">No favorite movies added yet.</p>
               </ng-template>
 
               <div class="flex justify-between mt-6">
-                <button mat-raised-button color="warn" class="flex items-center gap-2 bg-red-700 hover:bg-red-800 text-yellow-300" (click)="deleteUser()">
+                <button mat-raised-button class="flex items-center gap-2 bg-red-800 hover:bg-red-900 text-yellow-300"
+                        (click)="deleteUser()">
                   <mat-icon>delete</mat-icon> Delete Account
                 </button>
-                <button mat-raised-button color="primary" class="flex items-center gap-2 bg-red-800 hover:bg-red-900 text-yellow-300" (click)="isEditing = true">
+                <button mat-raised-button class="flex items-center gap-2 bg-purple-900 hover:bg-purple-950 text-yellow-300"
+                        (click)="isEditing = true">
                   <mat-icon>edit</mat-icon> Edit Profile
                 </button>
               </div>
@@ -94,8 +100,12 @@ import { MatIconModule } from '@angular/material/icon';
               </mat-form-field>
 
               <div class="flex justify-end gap-4 mt-4">
-                <button mat-stroked-button type="button" (click)="cancelEdit()" class="text-red-800 border-red-800 hover:bg-red-100">Cancel</button>
-                <button mat-raised-button color="accent" type="submit" class="flex items-center gap-2 bg-red-800 hover:bg-red-900 text-yellow-300">
+                <button mat-stroked-button type="button" (click)="cancelEdit()"
+                        class="text-yellow-200 border-yellow-600 hover:bg-purple-900/50">
+                  Cancel
+                </button>
+                <button mat-raised-button type="submit"
+                        class="flex items-center gap-2 bg-purple-900 hover:bg-purple-950 text-yellow-300">
                   <mat-icon>save</mat-icon> Save Changes
                 </button>
               </div>
@@ -105,18 +115,34 @@ import { MatIconModule } from '@angular/material/icon';
         </mat-card>
 
         <!-- Bottom Curtain -->
-        <div class="absolute -bottom-12 left-0 w-full h-12 bg-red-800 rounded-b-lg border-t-4 border-yellow-500 shadow-lg"></div>
-
+        <div class="absolute -bottom-12 left-0 w-full h-12 rounded-b-lg bg-gradient-to-t from-purple-900 to-purple-700 border-t-4 border-yellow-600 shadow-lg"></div>
       </div>
     </div>
   `,
   styles: [`
-    /* Optional: animate curtains */
-    .bg-red-800 {
-      background-image: linear-gradient(to bottom right, #7f1d1d, #b91c1c);
+    /* 🎭 Background - same as welcome/movie pages */
+    .vaudeville-bg {
+      background-image: 
+        linear-gradient(to bottom, rgba(30, 10, 45, 0.95), rgba(10, 0, 25, 0.98)),
+        url('https://www.transparenttextures.com/patterns/dark-wood.png');
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fef6e4;
     }
+
+    /* Ornate golden frame styling */
+    .vaudeville-frame {
+      background: linear-gradient(160deg, #2e004f 0%, #3b0066 100%);
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(255, 215, 0, 0.3);
+    }
+
     mat-card {
       background-color: transparent !important;
+    }
+
+    mat-label, input, p {
+      color: #fef6e4 !important;
     }
   `]
 })

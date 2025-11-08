@@ -13,24 +13,23 @@ import { UserLoginFormComponent } from '../user-login-form/user-login-form';
   imports: [
     MatCardModule, 
     MatButtonModule, 
-    UserRegistrationFormComponent, 
     UserLoginFormComponent
   ],
   template: `
-    <div class="welcome-frame p-8 min-h-screen flex flex-col items-center justify-center">
-      <div class="frame-border">
-        <mat-card class="w-full max-w-md shadow-2xl rounded-lg vaudeville-card">
+    <div class="vaudeville-bg min-h-screen flex items-center justify-center px-4">
+      <div class="frame-border p-6 rounded-2xl max-w-sm w-full">
+        <mat-card class="vaudeville-card shadow-2xl rounded-xl">
           <mat-card-header class="justify-center text-center py-4">
-            <mat-card-title class="text-3xl font-serif text-indigo-700">
+            <mat-card-title class="text-3xl font-serif text-indigo-100">
               Welcome to myFlix
             </mat-card-title>
-            <mat-card-subtitle class="text-gray-600 mt-2">
+            <mat-card-subtitle class="text-purple-200 mt-2">
               Your source for movie information.
             </mat-card-subtitle>
           </mat-card-header>
           
-          <mat-card-content class="space-y-4">
-            <p class="text-center text-gray-700">
+          <mat-card-content class="space-y-6 p-4">
+            <p class="text-center text-purple-100">
               Sign up or log in to explore our collection.
             </p>
             
@@ -39,7 +38,7 @@ import { UserLoginFormComponent } from '../user-login-form/user-login-form';
                 mat-raised-button 
                 color="primary" 
                 (click)="openUserRegistrationDialog()"
-                class="w-full py-3"
+                class="w-full py-3 font-semibold tracking-wide"
               >
                 Sign Up
               </button>
@@ -48,7 +47,7 @@ import { UserLoginFormComponent } from '../user-login-form/user-login-form';
                 mat-stroked-button 
                 color="accent" 
                 (click)="openUserLoginDialog()"
-                class="w-full py-3"
+                class="w-full py-3 font-semibold tracking-wide"
               >
                 Log In
               </button>
@@ -59,35 +58,44 @@ import { UserLoginFormComponent } from '../user-login-form/user-login-form';
     </div>
   `,
   styles: [`
-    /* Page background gradient */
-    .welcome-frame {
-      background: radial-gradient(circle at center, #f5f0e6 0%, #e0d4b7 100%);
+    /* 🎭 Background matches the movie card page */
+    .vaudeville-bg {
+      background-image: 
+        linear-gradient(to bottom, rgba(30, 10, 45, 0.9), rgba(5, 0, 10, 0.95)),
+        url('https://www.transparenttextures.com/patterns/dark-wood.png');
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fef6e4;
     }
 
-    /* Vaudeville frame */
+    /* 🎞️ Golden ornate frame */
     .frame-border {
-      padding: 20px;
-      border: 12px double #b58900; /* golden double border */
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+      border: 10px double #b58900;
       background: linear-gradient(145deg, #fff7e6, #fceabb);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+      border-radius: 18px;
+      transform: scale(1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Card styling inside frame */
+    .frame-border:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.5);
+    }
+
+    /* 🎬 Inner card styling */
     .vaudeville-card {
-      border: 4px solid #d4af37; /* ornate gold inner border */
-      border-radius: 15px;
-      padding: 15px;
+      border: 4px solid #d4af37;
       background: linear-gradient(160deg, #fff8f0, #ffeab0);
+      padding: 10px;
+      text-align: center;
     }
 
-    /* Title styling */
     mat-card-title {
       font-weight: 900;
-      text-shadow: 2px 2px #c49e3a;
+      text-shadow: 2px 2px #6b21a8;
     }
 
-    /* Button styling */
     button {
       font-weight: 600;
       text-transform: uppercase;
@@ -97,22 +105,18 @@ import { UserLoginFormComponent } from '../user-login-form/user-login-form';
 })
 export class WelcomePageComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
-  /**
-   * Opens the user registration dialog.
-   */
+  /** Opens the user registration dialog */
   openUserRegistrationDialog(): void {
     this.dialog.open(UserRegistrationFormComponent, {
       width: '280px',
     });
   }
 
-  /**
-   * Opens the user login dialog.
-   */
+  /** Opens the user login dialog */
   openUserLoginDialog(): void {
     this.dialog.open(UserLoginFormComponent, {
       width: '280px',
